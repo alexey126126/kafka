@@ -1,0 +1,2 @@
+kafka-configuration:
+  bootstrap-servers: chapalah_:9092
