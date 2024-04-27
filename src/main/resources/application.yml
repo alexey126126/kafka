@@ -1,2 +1,19 @@
-kafka-configuration:
-  bootstrap-servers: chapalah_:9092
+server:
+  port: 8081
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:29092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        acks: 1
+        spring:
+          json:
+            add:
+              type:
+                headers: false
+
+topic:
+  send-order: send-order-event

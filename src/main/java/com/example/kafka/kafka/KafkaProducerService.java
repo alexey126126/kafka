@@ -1,21 +1,23 @@
 package com.example.kafka.kafka;
 
-import com.example.kafka.config.Config;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class KafkaProducerService {
 
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    @Value("${topic.send-order}")
+    private String topicName;
 
     @Autowired
-    public KafkaProducerService(KafkaTemplate<String, Object> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
-    }
+    private KafkaTemplate<String, Object> kafkaTemplate;
 
     public void sendToTopic(String message) {
-        kafkaTemplate.send(Config.ACTIVITY_TOPIC, message);
+        kafkaTemplate.send(topicName, message);
     }
 }

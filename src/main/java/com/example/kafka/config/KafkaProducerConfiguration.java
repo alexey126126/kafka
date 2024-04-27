@@ -8,32 +8,31 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@RequiredArgsConstructor
 public class KafkaProducerConfiguration {
 
-    @Value(value = "${kafka-configuration.bootstrap-servers}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
     @Bean
-    public Map<String, Object> producerConfigs() {
+    public ProducerFactory<String, Object> producerConfigs() {
         Map<String, Object> properties = new HashMap<>();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        properties.put(ProducerConfig.CLIENT_ID_CONFIG, Config.GROUP_ID);
-        return properties;
+        //properties.put(ProducerConfig.CLIENT_ID_CONFIG, Config.GROUP_ID);
+        return new DefaultKafkaProducerFactory<>(properties);
     }
 
     @Bean
-    KafkaTemplate<String, Object> kafkaTemplate() {
-        KafkaTemplate<String, Object> template = new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(producerConfigs()));
+    public KafkaTemplate<String, Object> kafkaTemplate() {
         //template.setMessageConverter(new StringJsonMessageConverter());
-        return template;
+        return new KafkaTemplate<>(producerConfigs());
     }
 }
